@@ -1,7 +1,9 @@
 package com.CrystalShop.api.service;
 
 import com.CrystalShop.api.entity.User;
+import com.CrystalShop.api.exception.ApiException;
 import com.CrystalShop.api.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class UserServiceImpl implements UserService{
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         }
-        throw new RuntimeException("user id is not present "+ id);
+        throw new ApiException("user id is not present "+ id, HttpStatus.NOT_FOUND);
     }
 
     @Override
