@@ -1,6 +1,7 @@
 package com.CrystalShop.api.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,24 +17,32 @@ import java.math.BigDecimal;
 public class Product {
 
 
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-@Column(name = "id")
-private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-@Column(name = "name")
-private String name;
+    @NotBlank
+    @Size(min = 2, max = 100)
+    @Column(name = "name")
+    private String name;
 
-@Column(name = "description")
-private  String description;
 
-@Column(name = "price")
-private BigDecimal price;
+    @Size( max = 500)
+    @Column(name = "description")
+    private  String description;
 
-@Column(name = "stock_quantity")
-private Integer stockQuantity;
+    @NotNull
+    @Positive
+    @Column(name = "price")
+    private BigDecimal price;
 
-@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-@JoinColumn(name = "category_id")
-private Category category;
+    @NotNull
+    @Min(value = 0)
+    @Column(name = "stock_quantity")
+    private Integer stockQuantity;
+
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "category_id")
+    private Category category;
 }
