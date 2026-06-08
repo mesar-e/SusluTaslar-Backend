@@ -2,6 +2,8 @@ package com.CrystalShop.api.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,9 +21,12 @@ public class Category {
     @Column(name = "id")
     private Long id;
 
+    @NotBlank
+    @Size(min = 2, max = 50)
     @Column(name = "name")
     private String name;
 
+    @Size(max = 250)
     @Column(name = "description")
     private String description;
 
