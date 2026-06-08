@@ -1,5 +1,7 @@
 package com.CrystalShop.api.controller;
 
+import com.CrystalShop.api.dto.UserRequest;
+import com.CrystalShop.api.dto.UserResponse;
 import com.CrystalShop.api.entity.User;
 import com.CrystalShop.api.service.UserService;
 import jakarta.validation.Valid;
@@ -35,22 +37,18 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        User savedUser = userService.save(user);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED); // 201 CREATED
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
+
+        UserResponse savedUser = userService.save(userRequest);
+        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails) {
-        User existingUser = userService.findById(id);
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest userRequest) {
 
-        existingUser.setFirstName(userDetails.getFirstName());
-        existingUser.setLastName(userDetails.getLastName());
-        existingUser.setEmail(userDetails.getEmail());
-        existingUser.setPassword(userDetails.getPassword());
+        UserResponse updatedUser = userService.update(id, userRequest);
 
-        User updatedUser = userService.save(existingUser);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
