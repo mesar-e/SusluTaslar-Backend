@@ -7,7 +7,7 @@ import com.CrystalShop.api.exception.ApiException;
 import com.CrystalShop.api.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,5 +78,34 @@ public class UserServiceImpl implements UserService{
         response.setEmail(updatedUser.getEmail());
 
         return response;
+    }
+
+    @Override
+    public UserResponse getUserDtoById(Long id) {
+
+        User user = findById(id);
+
+        UserResponse response = new UserResponse();
+        response.setId(user.getId());
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setEmail(user.getEmail());
+
+        return response;
+    }
+
+    @Override
+    public List<UserResponse> getAllUsersDto() {
+
+        List<User> users = findAll();
+
+        return users.stream().map(user -> {
+            UserResponse response = new UserResponse();
+            response.setId(user.getId());
+            response.setFirstName(user.getFirstName());
+            response.setLastName(user.getLastName());
+            response.setEmail(user.getEmail());
+            return response;
+        }).collect(Collectors.toList());
     }
 }
