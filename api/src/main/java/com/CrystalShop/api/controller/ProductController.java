@@ -1,7 +1,7 @@
 package com.CrystalShop.api.controller;
 
-
-import com.CrystalShop.api.entity.Product;
+import com.CrystalShop.api.dto.ProductRequest;
+import com.CrystalShop.api.dto.ProductResponse;
 import com.CrystalShop.api.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,40 +20,29 @@ public class ProductController {
         this.productService = productService;
     }
 
-
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.findAll();
-        return new ResponseEntity<>(products, HttpStatus.OK);
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProductsDto());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        Product product = productService.findById(id);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductDtoById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
-        Product savedProduct = productService.save(product);
-        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED); // 201 CREATED döner
+    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest productRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productRequest));
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody Product productDetails) {
-        Product existingProduct = productService.findById(id);
-        existingProduct.setName(productDetails.getName());
-        existingProduct.setDescription(productDetails.getDescription());
-        existingProduct.setPrice(productDetails.getPrice());
-        existingProduct.setStockQuantity(productDetails.getStockQuantity());
-        Product updatedProduct = productService.save(existingProduct);
 
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductRequest productRequest) {
+        return ResponseEntity.ok(productService.update(id, productRequest));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        Product product = productService.findById(id);
-        productService.delete(product);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        productService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
