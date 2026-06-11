@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class ProductRequest {
 
@@ -15,7 +17,7 @@ public class ProductRequest {
 
     @NotNull(message = "fiyat boş olamaz")
     @Min(value = 0, message = "fiyat sıfırdan küçük olamaz")
-    private Double price;
+    private BigDecimal price;
 
     @NotNull(message = "kategorisi boş olamaz")
     private Long categoryId;
