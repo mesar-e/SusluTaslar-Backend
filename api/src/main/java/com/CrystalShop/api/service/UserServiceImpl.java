@@ -7,6 +7,8 @@ import com.CrystalShop.api.enums.Role;
 import com.CrystalShop.api.exception.ApiException;
 import com.CrystalShop.api.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.stream.Collectors;
@@ -22,6 +24,24 @@ public class UserServiceImpl implements UserService{
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
+    private void checkUserOwnershipOrAdmin(Long targetUserId) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String loggedInEmail = ((UserDetails) principal).getUsername();
+
+            User loggedInUser = userRepository.findByEmail(loggedInEmail)
+                    .orElseThrow(() -> new ApiException("Giriş yapan kullanıcı bulunamadı!", HttpStatus.UNAUTHORIZED));
+
+            if (loggedInUser.getRole() != Role.ADMIN && !loggedInUser.getId().equals(targetUserId)) {
+                throw new ApiException("Erişim Reddedildi: Sadece kendi profilinize müdahale edebilirsiniz!", HttpStatus.FORBIDDEN);
+            }
+        } else {
+            throw new ApiException("Sisteme giriş yapmanız gerekiyor!", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
 
     @Override
     public List<User> findAll() {
@@ -63,6 +83,8 @@ public class UserServiceImpl implements UserService{
     @Override
     public void delete(Long id) {
 
+        checkUserOwnershipOrAdmin(id);
+
         User user = findById(id);
 
         userRepository.delete(user);
@@ -70,6 +92,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponse update(Long id, UserRequest userRequest) {
+        checkUserOwnershipOrAdmin(id);
+
         User existingUser = findById(id);
 
         existingUser.setFirstName(userRequest.getFirstName());
@@ -92,6 +116,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponse getUserDtoById(Long id) {
+
+        checkUserOwnershipOrAdmin(id);
 
         User user = findById(id);
 
