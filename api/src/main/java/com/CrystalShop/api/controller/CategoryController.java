@@ -1,6 +1,8 @@
 package com.CrystalShop.api.controller;
 
 
+import com.CrystalShop.api.dto.CategoryRequest;
+import com.CrystalShop.api.dto.CategoryResponse;
 import com.CrystalShop.api.entity.Category;
 import com.CrystalShop.api.service.CategoryService;
 import jakarta.validation.Valid;
@@ -17,40 +19,33 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
+
         this.categoryService = categoryService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories = categoryService.findAll();
-        return new ResponseEntity<>(categories, HttpStatus.OK);
+    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
+
+        return ResponseEntity.ok(categoryService.getAllCategoriesDto());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
-        Category category = categoryService.findById(id);
-        return new ResponseEntity<>(category, HttpStatus.OK);
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getCategoryDtoById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) {
-        Category savedCategory = categoryService.save(category);
-        return new ResponseEntity<>(savedCategory, HttpStatus.CREATED); // 201 CREATED döner
+    public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.save(categoryRequest));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id,@Valid @RequestBody Category categoryDetails) {
-        Category existingCategory = categoryService.findById(id);
-        existingCategory.setName(categoryDetails.getName());
-        existingCategory.setDescription(categoryDetails.getDescription());
-        Category updatedCategory = categoryService.save(existingCategory);
-
-        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryRequest categoryRequest) {
+        return ResponseEntity.ok(categoryService.update(id, categoryRequest));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        Category category = categoryService.findById(id);
-        categoryService.delete(category);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        categoryService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
