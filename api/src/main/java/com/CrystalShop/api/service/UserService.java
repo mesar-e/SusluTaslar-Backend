@@ -10,7 +10,7 @@ public interface UserService {
     List<User> findAll();
     User findById(Long id);
     UserResponse save(UserRequest userRequest);
-    void delete(User user);
+    void delete(Long id);
     UserResponse update(Long id, UserRequest userRequest);
     List<UserResponse> getAllUsersDto();
     UserResponse getUserDtoById(Long id);

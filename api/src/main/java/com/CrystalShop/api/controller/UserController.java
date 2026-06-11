@@ -2,7 +2,6 @@ package com.CrystalShop.api.controller;
 
 import com.CrystalShop.api.dto.UserRequest;
 import com.CrystalShop.api.dto.UserResponse;
-import com.CrystalShop.api.entity.User;
 import com.CrystalShop.api.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,6 @@ public class UserController {
 
     private final UserService userService;
 
-
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -25,36 +23,23 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<UserResponse> users = userService.getAllUsersDto();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return ResponseEntity.ok(userService.getAllUsersDto());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
-        UserResponse user = userService.getUserDtoById(id);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
-
-        UserResponse savedUser = userService.save(userRequest);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(userRequest));
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest userRequest) {
-
-        UserResponse updatedUser = userService.update(id, userRequest);
-
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        return ResponseEntity.ok(userService.update(id, userRequest));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        User user = userService.findById(id);
-        userService.delete(user);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 NO CONTENT
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
