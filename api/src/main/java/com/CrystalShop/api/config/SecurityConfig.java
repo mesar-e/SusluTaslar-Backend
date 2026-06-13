@@ -35,6 +35,14 @@ public class SecurityConfig {
                         .requestMatchers("/products/**").hasAuthority("ADMIN")
 
 
+
+                        .requestMatchers(HttpMethod.POST, "/orders").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/orders/my-orders").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/orders/*/cancel").authenticated()
+
+
+                        .requestMatchers(HttpMethod.GET, "/orders").hasAuthority("ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
