@@ -36,6 +36,7 @@ public class ProductServiceImpl implements ProductService{
         response.setName(product.getName());
         response.setDescription(product.getDescription());
         response.setPrice(product.getPrice());
+        response.setStockQuantity(product.getStockQuantity());
 
         if (product.getCategory() != null) {
             response.setCategoryId(product.getCategory().getId());
@@ -66,6 +67,7 @@ public class ProductServiceImpl implements ProductService{
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
         product.setCategory(category);
+        product.setStockQuantity(productRequest.getStockQuantity());
 
         Product savedProduct = productRepository.save(product);
         return convertToResponse(savedProduct);
@@ -80,6 +82,7 @@ public class ProductServiceImpl implements ProductService{
         existingProduct.setDescription(productRequest.getDescription());
         existingProduct.setPrice(productRequest.getPrice());
         existingProduct.setCategory(category);
+        existingProduct.setStockQuantity(productRequest.getStockQuantity());
 
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToResponse(updatedProduct);

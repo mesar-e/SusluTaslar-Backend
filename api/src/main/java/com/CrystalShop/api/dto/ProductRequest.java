@@ -19,6 +19,10 @@ public class ProductRequest {
     @Min(value = 0, message = "fiyat sıfırdan küçük olamaz")
     private BigDecimal price;
 
+    @NotNull(message = "Stok miktarı boş olamaz!")
+    @Min(value = 0, message = "Stok adedi eksi olamaz!")
+    private Integer stockQuantity;
+
     @NotNull(message = "kategorisi boş olamaz")
     private Long categoryId;
 }
